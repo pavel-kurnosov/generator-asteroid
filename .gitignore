@@ -3,4 +3,6 @@ temp/
 .DS_Store
 .idea/
 generator-asteroid.iml
+generator-asteroid.ipr
+generator-asteroid.iws
 *.log
