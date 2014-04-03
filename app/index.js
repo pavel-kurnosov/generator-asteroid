@@ -8,13 +8,15 @@ var sys = require('sys')
 var exec = require('child_process').exec;
 var bootstarap = require('./bootstrap');
 
-var packages = [
+var AsteroidGenerator = yeoman.generators.Base.extend();
+
+AsteroidGenerator.packages = [
     'standard-app-packages',
     'accounts-base',
     'accounts-password'
 ];
 
-var smartPackages = {
+AsteroidGenerator.smartPackages = {
     "meteor": {
         "git": "https://github.com/meteor/meteor.git",
         "branch": "master"
@@ -23,8 +25,6 @@ var smartPackages = {
         "iron-router": {}
     }
 };
-
-var AsteroidGenerator = yeoman.generators.Base.extend();
 
 AsteroidGenerator.prototype.askFor = function () {
     var done = this.async();
@@ -49,6 +49,9 @@ AsteroidGenerator.prototype.askFor = function () {
     }.bind(this));
 };
 
+
+bootstarap.bootstrapGenerator(AsteroidGenerator);
+
 // generate the basic scaffolding for a Meteor project
 AsteroidGenerator.prototype.app = function app() {
     this.mkdir('client');
@@ -67,21 +70,24 @@ AsteroidGenerator.prototype.app = function app() {
 
     this.copy('.meteor/release', '.meteor/release');
     this.copy('sample_name.html', this.appName + '.html');
+    if (this.isUseSass) {
+        this.directory('client/bootstrap/scss', 'client/styles/scss');
+    } else if (this.isUseLess){
+        this.directory('client/bootstrap/less', 'client/styles/less');
+    }
 };
-
-bootstarap.bootstrapGenerator(AsteroidGenerator);
 
 AsteroidGenerator.prototype.done = function done() {
-    this.write('.meteor/packages', packages.join('\n'));
-    this.write('smart.json', JSON.stringify(smartPackages, null, 2));
+    this.write('.meteor/packages', AsteroidGenerator.packages.join('\n'));
+    this.write('smart.json', JSON.stringify(AsteroidGenerator.smartPackages, null, 2));
 };
 
 
-AsteroidGenerator.prototype.initMrt = function () {
-    var done = this.async();
-    exec("mrt install", function () {
-        done();
-    });
-};
+//AsteroidGenerator.prototype.initMrt = function () {
+//    var done = this.async();
+//    exec("mrt install", function () {
+//        done();
+//    });
+//};
 
 module.exports = AsteroidGenerator;
