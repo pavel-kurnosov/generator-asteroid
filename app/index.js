@@ -7,13 +7,12 @@ var chalk = require('chalk');
 var sys = require('sys')
 var exec = require('child_process').exec;
 var bootstarap = require('./bootstrap');
+var accounts = require('./accounts');
 
 var AsteroidGenerator = yeoman.generators.Base.extend();
 
 AsteroidGenerator.packages = [
-    'standard-app-packages',
-    'accounts-base',
-    'accounts-password'
+    'standard-app-packages'
 ];
 
 AsteroidGenerator.smartPackages = {
@@ -51,6 +50,7 @@ AsteroidGenerator.prototype.askFor = function () {
 
 
 bootstarap.bootstrapGenerator(AsteroidGenerator);
+accounts.accountsGenerator(AsteroidGenerator);
 
 // generate the basic scaffolding for a Meteor project
 AsteroidGenerator.prototype.app = function app() {
@@ -69,11 +69,15 @@ AsteroidGenerator.prototype.app = function app() {
     this.mkdir('.meteor');
 
     this.copy('.meteor/release', '.meteor/release');
-    this.copy('sample_name.html', this.appName + '.html');
+    this.copy('sample_name.html', 'client/' + this.appName + '.html');
     if (this.isUseSass) {
         this.directory('client/bootstrap/scss', 'client/styles/scss');
     } else if (this.isUseLess){
         this.directory('client/bootstrap/less', 'client/styles/less');
+    }
+
+    if (this.isUseAccounts) {
+        this.copy('client/accounts/sample_name.html', 'client/' + this.appName + '.html');
     }
 };
 

@@ -1,16 +1,21 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>sample_name</title>
+    <title>sample_name</title>
 </head>
 
 <body>
-  {{> hello}}
+{{> hello}}
 </body>
-<!--TODO create one file for different packages, or use template for that-->
+
 <template name="hello">
     <div class="navbar navbar-default" role="navigation">
         <div class="navbar-header">
             <a class="navbar-brand" href="#">Project name</a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                {{> loginButtons }}
+            </ul>
         </div>
     </div>
 </template>
