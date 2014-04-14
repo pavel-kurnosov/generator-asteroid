@@ -12,7 +12,8 @@ var accounts = require('./accounts');
 var AsteroidGenerator = yeoman.generators.Base.extend();
 
 AsteroidGenerator.packages = [
-    'standard-app-packages'
+    'standard-app-packages',
+    'iron-router'
 ];
 
 AsteroidGenerator.smartPackages = {
@@ -54,22 +55,29 @@ accounts.accountsGenerator(AsteroidGenerator);
 
 // generate the basic scaffolding for a Meteor project
 AsteroidGenerator.prototype.app = function app() {
+    this.mkdir('.meteor');
     this.mkdir('client');
     this.mkdir('client/compatibility');
     this.mkdir('client/styles');
     this.mkdir('client/lib');
     this.mkdir('client/views');
+
     this.mkdir('lib');
+
     this.mkdir('server');
+
     this.mkdir('public');
-    this.mkdir('public/fonts');
     this.mkdir('public/images');
+
     this.mkdir('private');
     this.mkdir('packages');
-    this.mkdir('.meteor');
 
     this.copy('.meteor/release', '.meteor/release');
     this.copy('sample_name.html', 'client/' + this.appName + '.html');
+    this.copy('client/routes.js', 'client/routes.js');
+    this.copy('client/view/layout.html', 'client/layout.html');
+    this.copy('client/view/header.html', 'client/header.html');
+
     if (this.isUseSass) {
         this.directory('client/bootstrap/scss', 'client/styles/scss');
     } else if (this.isUseLess){
@@ -77,7 +85,7 @@ AsteroidGenerator.prototype.app = function app() {
     }
 
     if (this.isUseAccounts) {
-        this.copy('client/accounts/sample_name.html', 'client/' + this.appName + '.html');
+//        this.copy('client/accounts/sample_name.html', 'client/' + this.appName + '.html');
     }
 };
 
