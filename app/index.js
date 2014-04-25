@@ -8,6 +8,7 @@ var sys = require('sys')
 var exec = require('child_process').exec;
 var bootstarap = require('./bootstrap');
 var accounts = require('./accounts');
+var fs = require('fs');
 
 var AsteroidGenerator = yeoman.generators.Base.extend();
 
@@ -17,10 +18,6 @@ AsteroidGenerator.packages = [
 ];
 
 AsteroidGenerator.smartPackages = {
-    "meteor": {
-        "git": "https://github.com/meteor/meteor.git",
-        "branch": "master"
-    },
     "packages": {
         "iron-router": {}
     }
@@ -60,7 +57,7 @@ AsteroidGenerator.prototype.app = function app() {
     this.mkdir('client/compatibility');
     this.mkdir('client/styles');
     this.mkdir('client/lib');
-    this.mkdir('client/views');
+    this.mkdir('client/view');
 
     this.mkdir('lib');
 
@@ -73,19 +70,29 @@ AsteroidGenerator.prototype.app = function app() {
     this.mkdir('packages');
 
     this.copy('.meteor/release', '.meteor/release');
-    this.copy('sample_name.html', 'client/' + this.appName + '.html');
     this.copy('client/routes.js', 'client/routes.js');
-    this.copy('client/view/layout.html', 'client/layout.html');
-    this.copy('client/view/header.html', 'client/header.html');
 
-    if (this.isUseSass) {
-        this.directory('client/bootstrap/scss', 'client/styles/scss');
-    } else if (this.isUseLess){
-        this.directory('client/bootstrap/less', 'client/styles/less');
+    this.copy('client/view/layout.html', 'client/view/layout.html');
+    this.copy('client/view/home.html', 'client/view/home.html');
+
+    if (this.isBootstrapUse) {
+        this.copy('client/bootstrap/view/header.html', 'client/view/header.html');
+        if (this.isUseSass) {
+            this.directory('client/bootstrap/scss', 'client/styles/scss');
+        } else if (this.isUseLess){
+            this.directory('client/bootstrap/less', 'client/styles/less');
+        }
+    } else {
+        this.copy('client/view/header.html', 'client/view/header.html');
     }
+};
 
+AsteroidGenerator.prototype.checkFiles = function checkFiles() {
+    var file = this.readFileAsString('client/view/header.html');
     if (this.isUseAccounts) {
-//        this.copy('client/accounts/sample_name.html', 'client/' + this.appName + '.html');
+        fs.writeFileSync('client/view/header.html', file.replace('%USER_TEMPLATE%', '{{> loginButtons }}'));
+    } else {
+        fs.writeFileSync('client/view/header.html', file.replace('%USER_TEMPLATE%', ''));
     }
 };
 
